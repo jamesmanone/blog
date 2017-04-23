@@ -7,7 +7,7 @@ template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
                                 autoescape = True)
 
-class BlogPosts(db.Model):
+class BlogPost(db.Model):
     title = db.StringProperty(required = True)
     content = db.TextProperty(required = True)
     timestamp = db.DateTimeProperty(auto_now_add = True)
@@ -25,7 +25,8 @@ class Handler(webapp2.RequestHandler):
 
 class MainHandler(Handler):
     def get(self):
-        self.write('TODO!')
+        posts = db.GqlQuery('SELECT * FROM BlogPost ORDER BY timestamp DESC')
+        self.render('main.html', posts = posts, pagename = 'Home')
 
 class NewPostHandler(Handler):
     def get(self):
@@ -36,7 +37,9 @@ class NewPostHandler(Handler):
         content = self.request.get('content')
 
         if title and content:
-            self.write('Nice one!')
+            a = BlogPost(title = title, content = content)
+            a.put()
+            self.write('Om Nom Nommm!')
         else:
             error = "You must complete both fields"
             self.render('new.html', error = error, title = title,
