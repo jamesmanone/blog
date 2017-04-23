@@ -7,6 +7,11 @@ template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
                                 autoescape = True)
 
+class BlogPosts(db.Model):
+    title = db.StringProperty(required = True)
+    content = db.TextProperty(required = True)
+    timestamp = db.DateTimeProperty(auto_now_add = True)
+
 class Handler(webapp2.RequestHandler):
     def write(self, *a, **kw):
         self.response.write(*a, **kw)
@@ -25,6 +30,17 @@ class MainHandler(Handler):
 class NewPostHandler(Handler):
     def get(self):
         self.render('new.html', pagename='New Post')
+
+    def post(self):
+        title = self.request.get('title')
+        content = self.request.get('content')
+
+        if title and content:
+            self.write('Nice one!')
+        else:
+            error = "You must complete both fields"
+            self.render('new.html', error = error, title = title,
+                        content = content, pagename = 'New Post')
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler), ('/newpost', NewPostHandler)
