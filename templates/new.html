@@ -1,15 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="subhead">
-  <h2>New Post</h2>
-</div>
+
 <div class="form">
   <form method="post">
     <label>
+      <div class="prompt">
+        <p>Title</p>
+      </div>
       <input type="text" name="title" value="{{title}}">
     </label>
     <label>
+      <div class="prompt">
+        </p>Article Content</p>
+      </div>
       <textarea name="content">{{content}}</textarea>
     </label>
     <label>
